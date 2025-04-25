@@ -90,3 +90,56 @@ async function ejecutarPruebas() {
 
 ejecutarPruebas().catch(console.error);
 ```
+### 4. Integración con GitHub Actions
+
+Este proyecto está configurado para ser ejecutado de manera automática a través de **GitHub Actions**, lo que permite ejecutar las pruebas de manera continua.
+
+Crea el archivo `.github/workflows/ci.yml` con el siguiente contenido:
+
+```yaml
+name: CI - Automate Testing with Playwright and ChatGPT
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: node test.js
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: '**/test-results/*.txt'
+```
+### 5. Ejecutar las pruebas
+
+Cuando realices un **push** o un **pull request** en la rama `main`, **GitHub Actions** ejecutará el flujo de trabajo, generará las pruebas utilizando ChatGPT y ejecutará las pruebas automatizadas en la tienda online utilizando **Playwright**.
+
+1. Cada vez que se ejecute el flujo de trabajo de GitHub Actions, el sistema:
+    - Clonará el repositorio.
+    - Instalará las dependencias necesarias.
+    - Ejecutará las pruebas automatizadas que han sido generadas dinámicamente por el agente IA.
+    - Subirá los resultados de las pruebas a GitHub para su revisión.
+
+2. Puedes revisar los resultados de las pruebas en la sección de **Actions** de tu repositorio en GitHub. Allí encontrarás detalles sobre si las pruebas pasaron o fallaron, y podrás revisar los logs de ejecución.
